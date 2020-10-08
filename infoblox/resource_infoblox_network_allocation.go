@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
+	ibclient "github.com/doananth16/infoblox-go-client"
 	"github.com/hashicorp/terraform/helper/schema"
-	ibclient "github.com/infobloxopen/infoblox-go-client"
 )
 
 func resourceNetworkAllocation() *schema.Resource {
@@ -55,6 +55,11 @@ func resourceNetworkAllocation() *schema.Resource {
 				Required:    true,
 				Description: "Prefix length of the network to be allocated.",
 			},
+			"comment": &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Comment used to describe the network address.",
+			},
 		},
 	}
 }
@@ -69,6 +74,7 @@ func resourceNetworkAllocationCreate(d *schema.ResourceData, m interface{}) erro
 	gateway := d.Get("gateway").(string)
 	prefixLength := d.Get("prefix_length").(string)
 	tenantID := d.Get("tenant_id").(string)
+	comment := d.Get("comment").(string)
 	connector := m.(*ibclient.Connector)
 
 	ZeroMacAddr := "00:00:00:00:00:00"
@@ -80,7 +86,7 @@ func resourceNetworkAllocationCreate(d *schema.ResourceData, m interface{}) erro
 		return fmt.Errorf("Error converting prefix to uint : %s", err)
 	}
 
-	nwname, err := objMgr.AllocateNetwork(networkViewName, cidr, uint(prefixUint), networkName)
+	nwname, err := objMgr.AllocateNetwork(networkViewName, cidr, uint(prefixUint), networkName, comment)
 	if err != nil {
 		return fmt.Errorf("Creation of network block failed in network view (%s) : %s", networkViewName, err)
 	}
