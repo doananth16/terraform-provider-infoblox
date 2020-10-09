@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
-	ibclient "github.com/doananth16/infoblox-go-client"
 	"github.com/hashicorp/terraform/helper/schema"
+	ibclient "github.com/infobloxopen/infoblox-go-client"
 )
 
 func resourceNetworkAllocation() *schema.Resource {
